@@ -39,10 +39,10 @@ public class CategoryRepository {
 	}
 
 	/**
-	 * 大カテゴリーのIDを取得.
+	 *大カテゴリー名から大カテゴリーのIDを取得.
 	 * 
 	 * @param largeCategoryName 
-	 * @return 
+	 * @return 大カテゴリーのID
 	 */
 	public Integer findByLargeCategoryId(String largeCategoryName) {
 		String sql = "SELECT id FROM category WHERE name =:name and parent is null and name_all is null";
@@ -52,7 +52,7 @@ public class CategoryRepository {
 	}
 
 	/**
-	 * 中カテゴリーのIDを取得.
+	 * 中カテゴリー名と大カテゴリーのIDから中カテゴリーのIDを取得.
 	 * 
 	 * @param mediumCategory
 	 * @param largeCategoryId
@@ -68,7 +68,7 @@ public class CategoryRepository {
 	
 	
 	/**
-	 * 小カテゴリーのIDを取得.
+	 * 小カテゴリー名と中カテゴリーIDから小カテゴリーのIDを取得.
 	 * 
 	 * @param smallCategory
 	 * @param mediumCategoryId

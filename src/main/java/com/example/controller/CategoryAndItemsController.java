@@ -19,9 +19,15 @@ import com.example.repository.CategoryRepository;
 import com.example.repository.ItemsRepository;
 import com.example.repository.OriginalRepository;
 
+/**
+ * categoryターブルとitemsテーブルへデータを挿入するコントローラー.
+ * 
+ * @author yamaokahayato
+ *
+ */
 @Controller
-@RequestMapping("/category3")
-public class CategoryController3 {
+@RequestMapping("/category")
+public class CategoryAndItemsController {
 
 	@Autowired
 	private OriginalRepository originalRepository;
@@ -39,18 +45,24 @@ public class CategoryController3 {
 	// 小カテゴリーを格納するmap
 	Map<String, Integer> smallCategoryMap = new HashMap<>();
 
+	/**
+	 * カテゴリーと商品情報をDBへ挿入する.
+	 * 
+	 * @return index.html
+	 */
 	@GetMapping("")
-	public String insertCategory() {
+	public String insertCategoryAndItems() {
 		// オリジナルテーブルから全件取得
 		List<Original2> originalList = originalRepository.findAll();
 		List<String> categorylList = new ArrayList<>();
-		Integer smallCategoryId = null;
+	
 		for (Original2 originalInfo : originalList) {
-			// category_nameのみ取得
+			// category_nameのみリストへ追加
 			categorylList.add(originalInfo.getCategory_name());
 		}
 
-		// Stream APIで重複チェックをして重複がないcatagory_nameをListに入れる
+		// Stream APIで重複チェックをして重複がないcatagory_nameをdistinctCategoryListに入れる
+		// stream():streamの呼び出し distinct():重複削除 collect(Collectors.toList()):リストに変換
 		List<String> distinctCategoryList = categorylList.stream().distinct().collect(Collectors.toList());
 
 		// 空白の一行を削除
@@ -59,10 +71,10 @@ public class CategoryController3 {
 		String categoryName = null;
 		Category category = new Category();
 		Items items = new Items();
-		// 重複削除のcategory_nameから1つずつ配列に格納
+		// 重複削除後のdistinctCategoryListからcategoryを1つずつ配列に格納
 		for (int i = 0; i < distinctCategoryList.size(); i++) {
 			categoryName = distinctCategoryList.get(i);
-			// catgoryNameを分割
+			// catgoryNameを分割　大/中/小
 			String[] categoryInfo = categoryName.split("/", 0);
 			// 大カテゴリーのみを代入
 			String largeCategoryName = categoryInfo[0];
@@ -112,15 +124,10 @@ public class CategoryController3 {
 				smallCategoryMap.put(smallCategoryName, count);
 
 			}
-		}
-//			// 小カテゴリーのidを取得
-//			smallCategoryId = categoryRepository.findBySmallCategoryId(categoryInfo[2],
-//					mediumCategoryMap.get(mediumCategoryName));
-
-			
-
+		}	
+			// itemsテーブルへ商品を追加する処理
 			for (Original2 original2 : originalList) {
-				Category abc = categoryRepository.findBySmallItemCategoryId(original2.getCategory_name());
+				Category smallCategory = categoryRepository.findBySmallItemCategoryId(original2.getCategory_name());
 				// 空白のcategoryName
 				if(original2.getCategory_name().equals("")) {
 					continue;
@@ -128,7 +135,7 @@ public class CategoryController3 {
 				
 				// IDがnullのデータをtry〜catchで例外処理実施
 				try {
-					items.setCategory(abc.getId());
+					items.setCategory(smallCategory.getId());
 				} catch(Exception e) {
 					items.setCategory(null);
 				}

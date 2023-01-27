@@ -18,6 +18,12 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
+/**
+ * tsvファイルを取り込みoriginalテーブルへ挿入するコントローラー.
+ * 
+ * @author yamaokahayato
+ *
+ */
 @Controller
 @RequestMapping("/")
 public class OriginalController {
@@ -25,6 +31,12 @@ public class OriginalController {
 	@Autowired
 	private OriginalService originalService;
 	
+	/**
+	 *  tsvファイルを取り込みoriginalテーブルへ挿入する.
+	 * 
+	 * @return index.html
+	 * @throws IOException
+	 */
 	@GetMapping("")
 	public String readAll() throws IOException {
 		
@@ -32,12 +44,12 @@ public class OriginalController {
 		// ヘッダあり、タブ区切り
 		CsvSchema schema = mapper.schemaFor(Original.class).withHeader().withColumnSeparator('\t');
 
-		Path path = Paths.get("/Users/yamaokahayato/Documents/train.tsv");
+		Path path = Paths.get("/Users/yamaokahayato/Documents/train.tsv"); //tsvファイルへのパス
 		try (BufferedReader br = Files.newBufferedReader(path)) {
 
 			MappingIterator<Original> it = mapper.readerFor(Original.class).with(schema).readValues(br);
 
-			//CSVファイルを全行まとめて読み込む場合
+			//tsvファイルを全行まとめて読み込む場合
 			//originalListに140万件全て入っている
 			List<Original> originalList = it.readAll();
 			//originalListから一個ずつoriginalに取り出す

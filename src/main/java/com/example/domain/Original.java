@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * @author yamaokahayato
  *
  */
+// tsvファイルの各項目を読み込む順序を設定する
 @JsonPropertyOrder({ "train_id", "name", "item_condition_id", "category_name", "brand_name", "price", "shipping",
 		"item_description" })
 public class Original {
@@ -32,7 +33,8 @@ public class Original {
 		this.shipping = shipping;
 		this.item_description = item_description;
 	}
-
+	
+	// JacksonライブラリはCSVやTSVをJavaオブジェクトに変換するときにはデフォルトコンストラクタを定義する
 	public Original() {
 
 	}
